@@ -1,3 +1,5 @@
 # Project Mate
 
-A Simple Cloud Platform to manage your projects and schedule your tasks!
+A Simple Cross-Platform Application to manage your projects and schedule your tasks!
+
+### In Development
