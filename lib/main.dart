@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:project_mate/home.dart';
+import 'package:project_mate/views/home.dart';
 import 'package:sizer/sizer.dart';
 
 void main() {
