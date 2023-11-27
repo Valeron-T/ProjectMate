@@ -11,6 +11,8 @@ class Calendar extends StatefulWidget {
 class _CalendarState extends State<Calendar> {
   final CalendarController _controller = CalendarController();
   Color? _headerColor, _viewHeaderColor, _calendarColor;
+  String season = "winter";
+  var month = 11;
 
   Widget monthCellBuilder(BuildContext context, MonthCellDetails details) {
     return Container(
@@ -35,10 +37,7 @@ class _CalendarState extends State<Calendar> {
                 ),
               ),
             ],
-          ),
-          Divider(
-            color: Colors.transparent,
-          ),
+          )
         ],
       ),
     );
@@ -56,9 +55,14 @@ class _CalendarState extends State<Calendar> {
         child: const Icon(Icons.add),
       ),
       body: Container(
+        constraints: const BoxConstraints.expand(),
+        decoration: BoxDecoration(
+            image: DecorationImage(
+                image: AssetImage("assets/images/$season.jpg"), fit: BoxFit.cover)),
         child: SfCalendar(
+          backgroundColor: Color.fromARGB(69, 255, 255, 255),
           allowDragAndDrop: false,
-          dragAndDropSettings: DragAndDropSettings(
+          dragAndDropSettings: const DragAndDropSettings(
             allowNavigation: true,
             allowScroll: true,
             autoNavigateDelay: Duration(seconds: 1),
@@ -72,7 +76,6 @@ class _CalendarState extends State<Calendar> {
               textAlign: TextAlign.center,
               textStyle: TextStyle(fontWeight: FontWeight.bold)),
           showNavigationArrow: true,
-          backgroundColor: _calendarColor,
           view: CalendarView.month,
           controller: _controller,
           allowedViews: const [
@@ -85,20 +88,37 @@ class _CalendarState extends State<Calendar> {
             CalendarView.timelineWorkWeek
           ],
           monthCellBuilder: monthCellBuilder,
+          onViewChanged: (ViewChangedDetails details) {
+            // Approximately selects the middle date from list of visible dates
+            month =
+                details.visibleDates[details.visibleDates.length ~/ 2].month;
+            // print(details.visibleDates[details.visibleDates.length~/2]);
+            // Change calendar bg based on season/month
+            month >= 3 && month <= 6
+                ? changebg("summer")
+                : month >= 7 && month <= 9
+                    ? changebg("monsoon")
+                    : month >= 10 && month <= 11
+                        ? changebg("spring")
+                        : changebg("winter");
+          },
           // TODO: handle all views
           onTap: (CalendarTapDetails calendarTapDetails) {
             print(calendarTapDetails.targetElement);
 
+            // Tapping on header at any point opens month view
             if (calendarTapDetails.targetElement == CalendarElement.header) {
               _controller.view = CalendarView.month;
             }
 
+            // TODO: Tapping at a time at day should open popup to add event with time pre-selected
             if (_controller.view == CalendarView.day &&
                 calendarTapDetails.targetElement ==
                     CalendarElement.calendarCell) {
               _showDatePickerPopup(context);
             }
 
+            // More view handling
             if (_controller.view == CalendarView.month &&
                 calendarTapDetails.targetElement ==
                     CalendarElement.calendarCell) {
@@ -210,6 +230,19 @@ class _CalendarState extends State<Calendar> {
         Color.fromARGB(255, 250, 180, 93),
         false));
     return meetings;
+  }
+
+  // Change calendar background to specified season
+  void changebg(String s) {
+    // Update only if new season is different
+    if (season != s) {
+      // Important to delay to prevent re updating state while building
+      Future.delayed(
+          Duration.zero,
+          () => setState(() {
+                season = s;
+              }));
+    }
   }
 }
 

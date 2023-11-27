@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
     return ScreenUtilInit(
       designSize: const Size(320, 534),
       builder: (context, child) {
-        return const GetMaterialApp(home: SafeArea(child: HomePage()));
+        return const GetMaterialApp(home: SafeArea(child: HomePage()), debugShowCheckedModeBanner: false,);
       },
     );
   }
