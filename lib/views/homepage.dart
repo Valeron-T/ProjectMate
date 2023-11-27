@@ -25,7 +25,7 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       bottomNavigationBar: Container(
-        height: 0.1.sh,
+        height: 50.h,
         padding: EdgeInsets.only(bottom: 0.0125.sh, right: 0.01.sw),
         margin: EdgeInsets.only(left: 0.05.sw, right: 0.05.sw, bottom: 0.03.sh),
         decoration: BoxDecoration(boxShadow: [
