@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
-class CalendarPage extends StatefulWidget {
-  const CalendarPage({super.key});
+class Calendar extends StatefulWidget {
+  const Calendar({super.key});
 
   @override
-  State<CalendarPage> createState() => _CalendarPageState();
+  State<Calendar> createState() => _CalendarState();
 }
 
-class _CalendarPageState extends State<CalendarPage> {
+class _CalendarState extends State<Calendar> {
   final CalendarController _controller = CalendarController();
   Color? _headerColor, _viewHeaderColor, _calendarColor;
 

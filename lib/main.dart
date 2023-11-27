@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:project_mate/views/home.dart';
-import 'package:sizer/sizer.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+import 'package:project_mate/views/homepage.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }
 
@@ -11,14 +13,11 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Sizer(
-      builder: (context, orientation, deviceType) => MaterialApp(
-        theme: ThemeData.from(
-            colorScheme: ColorScheme.fromSeed(
-                seedColor: const Color.fromARGB(255, 173, 229, 255))),
-        debugShowCheckedModeBanner: false,
-        home: const HomePage(),
-      ),
+    return ScreenUtilInit(
+      designSize: const Size(320, 534),
+      builder: (context, child) {
+        return const GetMaterialApp(home: SafeArea(child: HomePage()));
+      },
     );
   }
 }
