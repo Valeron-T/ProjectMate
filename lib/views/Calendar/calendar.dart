@@ -49,12 +49,6 @@ class _CalendarState extends State<Calendar> {
     var _viewHeaderColor = Colors.black38;
 
     return Scaffold(
-      appBar: AppBar(title: const Text("Calendar"), actions: const [
-        Padding(
-          padding: EdgeInsets.only(right: 16.0),
-          child: Icon(Icons.person),
-        )
-      ]),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           _showDatePickerPopup(context);

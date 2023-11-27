@@ -18,7 +18,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.blue[50],
-      body: Padding(
+      body: Container(
         padding: const EdgeInsets.all(16.0),
         child: Obx(
           () => controller.pages[controller.currentIndex.value],
