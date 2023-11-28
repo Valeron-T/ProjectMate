@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:project_mate/controllers/bottomnavbarcontroller.dart';
+import 'package:project_mate/views/Account/account.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -17,17 +18,41 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        foregroundColor: Colors.grey[700],
+        centerTitle: true,
+        elevation: 0,
+        backgroundColor: Colors.blue[50],
+        actions: [
+          IconButton(
+            icon: Icon(
+              Icons.person,
+              color: Colors.grey[700],
+            ),
+            onPressed: () {
+              Get.to(() => const Account());
+            },
+          )
+        ],
+        title: Title(
+          color: Colors.white,
+          child: Text(
+            "ProjectMate",
+            style: TextStyle(color: Colors.grey[700], fontSize: 20.sp),
+          ),
+        ),
+      ),
       backgroundColor: Colors.blue[50],
       body: Container(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.only(left: 12.0, right: 12.0, bottom: 12.0),
         child: Obx(
           () => controller.pages[controller.currentIndex.value],
         ),
       ),
       bottomNavigationBar: Container(
-        height: 50.h,
-        padding: EdgeInsets.only(bottom: 0.0125.sh, right: 0.01.sw),
-        margin: EdgeInsets.only(left: 0.05.sw, right: 0.05.sw, bottom: 0.03.sh),
+        height: 48,
+        padding: EdgeInsets.only(bottom: 0.009.sh, right: 0.01.sw),
+        margin: const EdgeInsets.only(left: 12.0, right: 12.0, bottom: 12.0),
         decoration: BoxDecoration(boxShadow: [
           BoxShadow(
             color: Colors.grey.withOpacity(0.1),

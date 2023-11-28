@@ -1,4 +1,6 @@
+// ignore_for_file: avoid_print
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
 class Calendar extends StatefulWidget {
@@ -10,7 +12,6 @@ class Calendar extends StatefulWidget {
 
 class _CalendarState extends State<Calendar> {
   final CalendarController _controller = CalendarController();
-  Color? _headerColor, _viewHeaderColor, _calendarColor;
   String season = "winter";
   var month = 11;
 
@@ -24,17 +25,13 @@ class _CalendarState extends State<Calendar> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Container(
-                child: Padding(
-                  padding: const EdgeInsets.all(4.0),
-                  child: Icon(Icons.wb_sunny_outlined),
-                ),
+              const Padding(
+                padding: EdgeInsets.all(4.0),
+                child: Icon(Icons.wb_sunny_outlined),
               ),
-              Container(
-                child: Padding(
-                  padding: const EdgeInsets.all(4.0),
-                  child: Text(details.date.day.toString()),
-                ),
+              Padding(
+                padding: const EdgeInsets.all(4.0),
+                child: Text(details.date.day.toString()),
               ),
             ],
           )
@@ -45,114 +42,123 @@ class _CalendarState extends State<Calendar> {
 
   @override
   Widget build(BuildContext context) {
-    var _viewHeaderColor = Colors.black38;
+    var viewHeaderColor = Colors.black38;
 
-    return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          _showDatePickerPopup(context);
-        },
-        child: const Icon(Icons.add),
-      ),
-      body: Container(
-        constraints: const BoxConstraints.expand(),
-        decoration: BoxDecoration(
-            image: DecorationImage(
-                image: AssetImage("assets/images/$season.jpg"), fit: BoxFit.cover)),
-        child: SfCalendar(
-          backgroundColor: Color.fromARGB(69, 255, 255, 255),
-          allowDragAndDrop: false,
-          dragAndDropSettings: const DragAndDropSettings(
-            allowNavigation: true,
-            allowScroll: true,
-            autoNavigateDelay: Duration(seconds: 1),
-            indicatorTimeFormat: 'HH:mm a',
-            showTimeIndicator: true,
+    return Stack(
+      alignment: Alignment.bottomRight,
+      children: [
+        Container(
+          constraints: const BoxConstraints.expand(),
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8),
+              image: DecorationImage(
+                  image: AssetImage("assets/images/$season.jpg"),
+                  fit: BoxFit.cover)),
+          child: SfCalendar(
+            backgroundColor: const Color.fromARGB(69, 255, 255, 255),
+            allowDragAndDrop: false,
+            dragAndDropSettings: const DragAndDropSettings(
+              allowNavigation: true,
+              allowScroll: true,
+              autoNavigateDelay: Duration(seconds: 1),
+              indicatorTimeFormat: 'HH:mm a',
+              showTimeIndicator: true,
+            ),
+            timeZone: "India Standard Time",
+            dataSource: MeetingDataSource(_getDataSource()),
+            viewHeaderStyle: ViewHeaderStyle(backgroundColor: viewHeaderColor),
+            headerStyle: const CalendarHeaderStyle(
+                textAlign: TextAlign.center,
+                textStyle: TextStyle(fontWeight: FontWeight.bold)),
+            showNavigationArrow: true,
+            view: CalendarView.month,
+            controller: _controller,
+            allowedViews: const [
+              CalendarView.day,
+              CalendarView.week,
+              CalendarView.workWeek,
+              CalendarView.month,
+              CalendarView.timelineDay,
+              CalendarView.timelineWeek,
+              CalendarView.timelineWorkWeek
+            ],
+            monthCellBuilder: monthCellBuilder,
+            onViewChanged: (ViewChangedDetails details) {
+              // Approximately selects the middle date from list of visible dates
+              month =
+                  details.visibleDates[details.visibleDates.length ~/ 2].month;
+              // print(details.visibleDates[details.visibleDates.length~/2]);
+              // Change calendar bg based on season/month
+              month >= 3 && month <= 6
+                  ? changebg("summer")
+                  : month >= 7 && month <= 9
+                      ? changebg("monsoon")
+                      : month >= 10 && month <= 11
+                          ? changebg("spring")
+                          : changebg("winter");
+            },
+            // handle all views
+            onTap: (CalendarTapDetails calendarTapDetails) {
+              print(calendarTapDetails.targetElement);
+
+              // Tapping on header at any point opens month view
+              if (calendarTapDetails.targetElement == CalendarElement.header) {
+                _controller.view = CalendarView.month;
+              }
+
+              // Tapping at a time at day should open popup to add event with time pre-selected
+              if (_controller.view == CalendarView.day &&
+                  calendarTapDetails.targetElement ==
+                      CalendarElement.calendarCell) {
+                _showDatePickerPopup(context);
+              }
+
+              // More view handling
+              if (_controller.view == CalendarView.month &&
+                  calendarTapDetails.targetElement ==
+                      CalendarElement.calendarCell) {
+                _controller.view = CalendarView.day;
+              } else if ((_controller.view == CalendarView.week ||
+                      _controller.view == CalendarView.workWeek) &&
+                  calendarTapDetails.targetElement ==
+                      CalendarElement.viewHeader) {
+                _controller.view = CalendarView.day;
+              }
+            },
+            monthViewSettings: const MonthViewSettings(
+                appointmentDisplayMode:
+                    MonthAppointmentDisplayMode.appointment),
           ),
-          timeZone: "India Standard Time",
-          dataSource: MeetingDataSource(_getDataSource()),
-          viewHeaderStyle: ViewHeaderStyle(backgroundColor: _viewHeaderColor),
-          headerStyle: const CalendarHeaderStyle(
-              textAlign: TextAlign.center,
-              textStyle: TextStyle(fontWeight: FontWeight.bold)),
-          showNavigationArrow: true,
-          view: CalendarView.month,
-          controller: _controller,
-          allowedViews: const [
-            CalendarView.day,
-            CalendarView.week,
-            CalendarView.workWeek,
-            CalendarView.month,
-            CalendarView.timelineDay,
-            CalendarView.timelineWeek,
-            CalendarView.timelineWorkWeek
-          ],
-          monthCellBuilder: monthCellBuilder,
-          onViewChanged: (ViewChangedDetails details) {
-            // Approximately selects the middle date from list of visible dates
-            month =
-                details.visibleDates[details.visibleDates.length ~/ 2].month;
-            // print(details.visibleDates[details.visibleDates.length~/2]);
-            // Change calendar bg based on season/month
-            month >= 3 && month <= 6
-                ? changebg("summer")
-                : month >= 7 && month <= 9
-                    ? changebg("monsoon")
-                    : month >= 10 && month <= 11
-                        ? changebg("spring")
-                        : changebg("winter");
-          },
-          // TODO: handle all views
-          onTap: (CalendarTapDetails calendarTapDetails) {
-            print(calendarTapDetails.targetElement);
-
-            // Tapping on header at any point opens month view
-            if (calendarTapDetails.targetElement == CalendarElement.header) {
-              _controller.view = CalendarView.month;
-            }
-
-            // TODO: Tapping at a time at day should open popup to add event with time pre-selected
-            if (_controller.view == CalendarView.day &&
-                calendarTapDetails.targetElement ==
-                    CalendarElement.calendarCell) {
-              _showDatePickerPopup(context);
-            }
-
-            // More view handling
-            if (_controller.view == CalendarView.month &&
-                calendarTapDetails.targetElement ==
-                    CalendarElement.calendarCell) {
-              _controller.view = CalendarView.day;
-            } else if ((_controller.view == CalendarView.week ||
-                    _controller.view == CalendarView.workWeek) &&
-                calendarTapDetails.targetElement ==
-                    CalendarElement.viewHeader) {
-              _controller.view = CalendarView.day;
-            }
-          },
-          monthViewSettings: const MonthViewSettings(
-              appointmentDisplayMode: MonthAppointmentDisplayMode.appointment),
         ),
-      ),
+        Container(
+          margin: EdgeInsets.only(bottom: 20.h, right: 20.w),
+          child: FloatingActionButton(
+              backgroundColor: Colors.blue[200],
+              onPressed: () {
+                _showDatePickerPopup(context);
+              },
+              child: const Icon(Icons.add)),
+        ),
+      ],
     );
   }
 
   Future<void> _showDatePickerPopup(BuildContext context) async {
     DateTime startDate = DateTime.now();
-    DateTime endDate = DateTime.now().add(Duration(days: 7));
+    DateTime endDate = DateTime.now().add(const Duration(days: 7));
 
     List<DateTime>? pickedDates = await showDialog<List<DateTime>>(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Configure event'),
+          title: const Text('Configure event'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               ListTile(
-                title: Text('Start Date'),
+                title: const Text('Start Date'),
                 subtitle: Text('${startDate.toLocal()}'),
-                trailing: Icon(Icons.edit),
+                trailing: const Icon(Icons.edit),
                 onTap: () async {
                   DateTime? pickedDate = await showDatePicker(
                     context: context,
@@ -166,9 +172,9 @@ class _CalendarState extends State<Calendar> {
                 },
               ),
               ListTile(
-                title: Text('End Date'),
+                title: const Text('End Date'),
                 subtitle: Text('${endDate.toLocal()}'),
-                trailing: Icon(Icons.edit),
+                trailing: const Icon(Icons.edit),
                 onTap: () async {
                   DateTime? pickedDate = await showDatePicker(
                     context: context,
@@ -188,7 +194,7 @@ class _CalendarState extends State<Calendar> {
               onPressed: () {
                 Navigator.of(context).pop([startDate, endDate]);
               },
-              child: Text('OK'),
+              child: const Text('OK'),
             ),
           ],
         );
@@ -215,19 +221,19 @@ class _CalendarState extends State<Calendar> {
         'Meeting',
         DateTime(today.year, today.month, today.day, 21, 0, 0),
         endTime,
-        Color.fromARGB(255, 134, 130, 15),
+        const Color.fromARGB(255, 134, 130, 15),
         false));
     meetings.add(Meeting(
         'Interview',
         DateTime(today.year, today.month, today.day, 22, 0, 0),
         endTime,
-        Color.fromARGB(255, 134, 80, 15),
+        const Color.fromARGB(255, 134, 80, 15),
         false));
     meetings.add(Meeting(
         'Interview',
         DateTime(today.year, today.month, today.day, 23, 0, 0),
         endTime,
-        Color.fromARGB(255, 250, 180, 93),
+        const Color.fromARGB(255, 250, 180, 93),
         false));
     return meetings;
   }
