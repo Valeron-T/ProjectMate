@@ -12,7 +12,6 @@ class Account extends StatelessWidget {
           elevation: 0.0,
           backgroundColor: Colors.blue[50],
           foregroundColor: Colors.grey[700],
-          centerTitle: true,
           title: const Text("Account"),
         ),
         body: Container(
@@ -21,7 +20,10 @@ class Account extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               ElevatedButton(
-                  onPressed: () {}, child: const Text("Sign In with Google"))
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue[500]),
+                  onPressed: () {},
+                  child: const Text("Sign In with Google"))
             ],
           ),
         ),

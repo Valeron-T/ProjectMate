@@ -19,15 +19,14 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        foregroundColor: Colors.grey[700],
-        centerTitle: true,
+        foregroundColor: Colors.black,
         elevation: 0,
         backgroundColor: Colors.blue[50],
         actions: [
           IconButton(
-            icon: Icon(
-              Icons.person,
-              color: Colors.grey[700],
+            icon: const Icon(
+              Icons.account_circle_rounded,
+              color: Colors.black,
             ),
             onPressed: () {
               Get.to(() => const Account());
@@ -36,9 +35,15 @@ class _HomePageState extends State<HomePage> {
         ],
         title: Title(
           color: Colors.white,
-          child: Text(
-            "ProjectMate",
-            style: TextStyle(color: Colors.grey[700], fontSize: 20.sp),
+          child: Obx(
+            () => Text(
+              controller.pages[controller.currentIndex.value].toString(),
+              style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 20.sp,
+                  fontFamily: "Inter",
+                  fontWeight: FontWeight.w600),
+            ),
           ),
         ),
       ),
@@ -50,7 +55,7 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       bottomNavigationBar: Container(
-        height: 48,
+        height: 50,
         padding: EdgeInsets.only(bottom: 0.009.sh, right: 0.01.sw),
         margin: const EdgeInsets.only(left: 12.0, right: 12.0, bottom: 12.0),
         decoration: BoxDecoration(boxShadow: [
@@ -89,7 +94,7 @@ class _HomePageState extends State<HomePage> {
                         },
                         icon: Icon(
                           LineIcons.home,
-                          color: Colors.grey[600],
+                          color: Colors.grey[700],
                           size: 28.sp,
                         ),
                       ),
@@ -140,7 +145,7 @@ class _HomePageState extends State<HomePage> {
                         },
                         icon: Icon(
                           Icons.format_list_bulleted_add,
-                          color: Colors.grey[600],
+                          color: Colors.grey[700],
                           size: 28.sp,
                         ),
                       ),
@@ -191,7 +196,7 @@ class _HomePageState extends State<HomePage> {
                         },
                         icon: Icon(
                           Icons.group_outlined,
-                          color: Colors.grey[600],
+                          color: Colors.grey[700],
                           size: 30.sp,
                         ),
                       ),
@@ -242,7 +247,7 @@ class _HomePageState extends State<HomePage> {
                         },
                         icon: Icon(
                           LineIcons.file,
-                          color: Colors.grey[600],
+                          color: Colors.grey[700],
                           size: 28.sp,
                         ),
                       ),
@@ -287,7 +292,7 @@ class _HomePageState extends State<HomePage> {
                         height: 0.05.sh,
                         width: 0.12.sw,
                         decoration: BoxDecoration(
-                            color: Colors.grey[600],
+                            color: Colors.grey[700],
                             borderRadius: BorderRadius.circular(6.dg)),
                         child: Text(
                           DateTime.now().day.toString(),
